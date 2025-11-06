@@ -2,57 +2,68 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
     <title>Reverse Clock</title>
     <style>
-        body {
+        html, body {
+            height: 100%;
+            margin: 0;
+            background: #222;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
         }
-        canvas {
+        #clockCanvas {
+            background: #fff;
             border-radius: 50%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            background-color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: block;
+            width: 90vw;
+            max-width: 400px;
+            height: auto;
+            aspect-ratio: 1/1;
         }
     </style>
 </head>
 <body>
-    <canvas id="clockCanvas" width="500" height="500"></canvas>
+    <canvas id="clockCanvas"></canvas>
     <script>
         const canvas = document.getElementById('clockCanvas');
         const ctx = canvas.getContext('2d');
-        const radius = canvas.width / 2;
-        const centerX = radius;
-        const centerY = radius;
+
+        function resizeCanvas() {
+            const size = Math.min(window.innerWidth, window.innerHeight) * 0.9;
+            canvas.width = size;
+            canvas.height = size;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
 
         function drawClock() {
-            // Clear canvas
+            const radius = canvas.width / 2;
+            const centerX = radius;
+            const centerY = radius;
+
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Draw white circle
+
+            // Draw white circle with silver border
             ctx.fillStyle = 'white';
             ctx.beginPath();
             ctx.arc(centerX, centerY, radius - 10, 0, 2 * Math.PI);
             ctx.fill();
-            
-            // Draw border
+
             ctx.strokeStyle = 'silver';
             ctx.lineWidth = 6;
             ctx.beginPath();
             ctx.arc(centerX, centerY, radius - 10, 0, 2 * Math.PI);
             ctx.stroke();
-            
-            // Draw hour numbers (12, 11, 10, ..., 1)
+
+            // Hour numbers: 12, 11, ..., 1
             ctx.fillStyle = 'black';
-            ctx.font = 'bold 24px Arial';
+            ctx.font = `bold ${Math.max(18, Math.floor(radius * 0.12))}px Arial`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            
             for (let i = 0; i < 12; i++) {
                 const angle = (i * Math.PI * 2) / 12;
                 const x = centerX + Math.sin(angle) * (radius * 0.65);
@@ -60,11 +71,10 @@
                 const num = 12 - i;
                 ctx.fillText(num, x, y);
             }
-            
-            // Draw minute numbers (60, 55, 50, ..., 0)
+
+            // Minute numbers: 60, 55, ..., 0
             ctx.fillStyle = 'blue';
-            ctx.font = '14px Arial';
-            
+            ctx.font = `${Math.max(11, Math.floor(radius * 0.07))}px Arial`;
             for (let i = 0; i < 12; i++) {
                 const angle = (i * Math.PI * 2) / 12;
                 const x = centerX + Math.sin(angle) * (radius * 0.85);
@@ -72,35 +82,33 @@
                 const minute = (60 - i * 5) % 60;
                 ctx.fillText(minute, x, y);
             }
-            
-            // Get current time
+
+            // Time math (REVERSE)
             const now = new Date();
             let seconds = now.getSeconds() + now.getMilliseconds() / 1000;
             let minutes = now.getMinutes() + seconds / 60;
             let hours = (now.getHours() % 12) + minutes / 60;
-            
-            // Calculate angles (REVERSE - negative values)
             const tick = (2 * Math.PI) / 60;
-            const secondAngle = -seconds * tick;
-            const minuteAngle = -minutes * tick;
-            const hourAngle = -hours * tick * 5;
-            
-            // Draw hands
-            drawHand(hourAngle, radius * 0.5, 8, 'black');      // Hour hand
-            drawHand(minuteAngle, radius * 0.7, 6, 'blue');     // Minute hand
-            drawHand(secondAngle, radius * 0.9, 4, 'red');      // Second hand
-            
-            // Draw center dot
+
+            // Draw hands (reverse)
+            drawHand(-hours * tick * 5, radius * 0.5, Math.max(5, radius * 0.045), 'black'); // Hour
+            drawHand(-minutes * tick, radius * 0.7, Math.max(3, radius * 0.035), 'blue');   // Minute
+            drawHand(-seconds * tick, radius * 0.9, Math.max(2, radius * 0.02), 'red');     // Second
+
+            // Center dot
             ctx.fillStyle = 'black';
             ctx.beginPath();
-            ctx.arc(centerX, centerY, 7, 0, 2 * Math.PI);
+            ctx.arc(centerX, centerY, Math.max(5, radius * 0.035), 0, 2 * Math.PI);
             ctx.fill();
         }
-        
+
         function drawHand(angle, length, width, color) {
+            const radius = canvas.width / 2;
+            const centerX = radius;
+            const centerY = radius;
             const endX = centerX + Math.sin(angle) * length;
             const endY = centerY - Math.cos(angle) * length;
-            
+
             ctx.strokeStyle = color;
             ctx.lineWidth = width;
             ctx.lineCap = 'round';
@@ -109,8 +117,7 @@
             ctx.lineTo(endX, endY);
             ctx.stroke();
         }
-        
-        // Update clock every 16ms (60 FPS)
+
         setInterval(drawClock, 16);
         drawClock();
     </script>
