@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reverse Clock</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="clockCanvas" width="500" height="500"></canvas>
+    <script>
+        const canvas = document.getElementById('clockCanvas');
+        const ctx = canvas.getContext('2d');
+        const radius = canvas.width / 2;
+        const centerX = radius;
+        const centerY = radius;
+
+        function drawClock() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw white circle
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius - 10, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Draw border
+            ctx.strokeStyle = 'silver';
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius - 10, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // Draw hour numbers (12, 11, 10, ..., 1)
+            ctx.fillStyle = 'black';
+            ctx.font = 'bold 24px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            for (let i = 0; i < 12; i++) {
+                const angle = (i * Math.PI * 2) / 12;
+                const x = centerX + Math.sin(angle) * (radius * 0.65);
+                const y = centerY - Math.cos(angle) * (radius * 0.65);
+                const num = 12 - i;
+                ctx.fillText(num, x, y);
+            }
+            
+            // Draw minute numbers (60, 55, 50, ..., 0)
+            ctx.fillStyle = 'blue';
+            ctx.font = '14px Arial';
+            
+            for (let i = 0; i < 12; i++) {
+                const angle = (i * Math.PI * 2) / 12;
+                const x = centerX + Math.sin(angle) * (radius * 0.85);
+                const y = centerY - Math.cos(angle) * (radius * 0.85);
+                const minute = (60 - i * 5) % 60;
+                ctx.fillText(minute, x, y);
+            }
+            
+            // Get current time
+            const now = new Date();
+            let seconds = now.getSeconds() + now.getMilliseconds() / 1000;
+            let minutes = now.getMinutes() + seconds / 60;
+            let hours = (now.getHours() % 12) + minutes / 60;
+            
+            // Calculate angles (REVERSE - negative values)
+            const tick = (2 * Math.PI) / 60;
+            const secondAngle = -seconds * tick;
+            const minuteAngle = -minutes * tick;
+            const hourAngle = -hours * tick * 5;
+            
+            // Draw hands
+            drawHand(hourAngle, radius * 0.5, 8, 'black');      // Hour hand
+            drawHand(minuteAngle, radius * 0.7, 6, 'blue');     // Minute hand
+            drawHand(secondAngle, radius * 0.9, 4, 'red');      // Second hand
+            
+            // Draw center dot
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 7, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+        
+        function drawHand(angle, length, width, color) {
+            const endX = centerX + Math.sin(angle) * length;
+            const endY = centerY - Math.cos(angle) * length;
+            
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+        }
+        
+        // Update clock every 16ms (60 FPS)
+        setInterval(drawClock, 16);
+        drawClock();
+    </script>
+</body>
+</html>
