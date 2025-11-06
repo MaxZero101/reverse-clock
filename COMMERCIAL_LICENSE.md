@@ -73,7 +73,7 @@ For commercial applications, products, or revenue-generating uses, a Commercial 
 ## How to Obtain a Commercial License
 
 ### Step 1: Contact Us
-Email: **MaxZero101@example.com**
+Email: **MaxZero101@protonmail.com**
 
 **Subject line:** "Reverse Clock Commercial License Request"
 
@@ -209,7 +209,7 @@ A: Email support included with all commercial licenses. Premium support availabl
 
 This commercial license is provided as-is. The software is provided without warranty of any kind, express or implied. The licensor is not liable for any damages arising from use of the software.
 
-This license agreement is governed by [Your State/Country] law.
+This license agreement is governed by State of Wisconsin, United States law.
 
 ---
 
