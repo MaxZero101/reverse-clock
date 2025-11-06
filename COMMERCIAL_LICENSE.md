@@ -11,7 +11,7 @@ For commercial applications, products, or revenue-generating uses, a Commercial 
 ## Commercial License Options
 
 ### Option 1: Flat-Fee License (Most Popular)
-**Cost:** $199 (one-time payment per product)
+**Cost:** $25 (one-time payment per product)
 
 **What You Get:**
 - ✅ Perpetual license to use code in ONE commercial product
