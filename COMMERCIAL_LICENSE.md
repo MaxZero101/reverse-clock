@@ -38,7 +38,7 @@ For commercial applications, products, or revenue-generating uses, a Commercial 
 **Payment Terms:**
 - **Quarterly Reporting:** Due within 30 days of quarter end
 - **Payment Method:** PayPal, bank transfer, or check
-- **Minimum Quarterly Payment:** $50
+- **No Quarterly Payment:**
 - **Quarterly Reports Include:**
   - Total units sold/users
   - Gross revenue (before expenses)
